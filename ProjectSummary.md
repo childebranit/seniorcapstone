@@ -97,3 +97,101 @@ The output of the table is shown below:
 Figure 3.4 Here is the information taken from the website and inserted into the users table<br><br>
 
 This now concludes the final part of Phase One, and setting up the foundations of a simulated network. Moving forward, the project will transition into Phase Two, focusing on penetration testing and the configuration and utilization of Security Onion. Following this phase, the work will progress toward integrating AWS Elastic Disaster Recovery to simulate cloud-based recovery.
+
+<h1>Phase 2</h1><br>
+
+Phase 2 consists of the set-up of Security Onion, testing, and analysis of logs through
+Security Onion web dashboard.<br><br>
+
+<h2>Setting up Security Onion</h2><br>
+
+The initial setting up of Security Onion was slightly difficult due to the lack of familarity
+with the set up of Vms. The first issue that was encountered was the iso had been
+corrupted during the download or upload process. A re-upload of the iso was able to fix
+the problem.<br>
+
+Here the set up process included the selection of Analyst role for Security Onion, setting
+Security Onion to 12 GB of RAM (which allowed me to run all future Vms together on 32 GB
+of server RAM).
+<img width="1919" height="1194" alt="image" src="https://github.com/user-attachments/assets/20944653-fb5e-4c42-9aa3-835a992c7c61" />
+Figure 5.1: Here is the selection of NIC to chose from during the set up process<br><br>
+
+While entering the initial set-up, Security Onion requires a minimum of two NICs. This was
+difficult, as the documentation of setup for Vms in Unraid is different compared to the
+exorbitant documentation of Vmware or Virtual Box. After some research and trial and
+error, two NICs were finally applied.<br>
+
+The final set up for Security Onion is shown below:
+<img width="1004" height="770" alt="image" src="https://github.com/user-attachments/assets/8936127b-113a-416a-bba7-168499c96014" />
+Figure 5.2: This is the final screen for Security Onion setup<br>
+
+Now we are able to access the terminal of Security Onion, shown below:
+<img width="971" height="1142" alt="image" src="https://github.com/user-attachments/assets/945d5f97-d932-4bb3-968e-5438a5504996" />
+
+Figure 5.3: Logging into Security Onion for the first time<br><br>
+
+In order to access the web dashboard to Security Onion, we will need a trusted
+computer/IP to monitor Security Onion activity.<br><br>
+
+<h2>Setting up Analyst Computer for Security Onion</h2><br>
+Here, we will set up a trusted computer to analyze traffic through the Security Onion
+dashboard. This will be an Ubuntu desktop, with 4 GB RAM and 20 GB of physical memory
+dedicated to the VM.
+<img width="965" height="1137" alt="image" src="https://github.com/user-attachments/assets/084cbe64-fca0-49a2-b729-94dfb9462c45" />
+Figure 6.1: The set up for Ubuntu desktop<br><br>
+Now that we have set up the Ubuntu desktop, we can attempt to connect to the
+dashboard. However, we will get this as a response:
+
+<img width="976" height="1148" alt="image" src="https://github.com/user-attachments/assets/de786936-c832-474b-8642-196aaa42b5b2" />
+
+Figure 6.2: Rejected connection to web dashboard<br><br>
+
+This because by default, Security Onion blocks all access to the web dashboard. Do fix this,
+we need to allow the admin computer access by whitelisting the IP shown below:
+<img width="977" height="1145" alt="image" src="https://github.com/user-attachments/assets/0734a881-9309-4cc0-8d4c-8c88f480b154" />
+Figure 6.3: Allow IP to access web dashboard<br><br>
+
+By allowing our admin computer, 192.168.22.166, through the firewall of Security Onion
+through so-firewall Now, we are able to access the dashboard:
+<img width="1917" height="1199" alt="image" src="https://github.com/user-attachments/assets/64d1d14d-3096-4fe1-92fa-eaa68eda769b" />
+
+_Figure 6.4: Login page for Security Onion webpage_<br><br>
+
+Here, we use the email and password from Security Onion from initial setup.
+After logging in, we are greeted with the Getting Started page:
+<img width="1697" height="1061" alt="image" src="https://github.com/user-attachments/assets/ca736959-a02e-4406-a0cd-b80abf955f57" />
+
+Figure 6.5: Successful login to dashboard<br><br>
+Security Onion provides the activity of anything that passes through it by, logs it, and
+monitors traffic at all times. In order to verify that it is properly working, we will need to
+test it.<br>
+An SQL injection is one of the more easier attacks to do on the network, and interestingly
+enough, the most ineffective against the website. This is due to the usage of Flask, where
+it inherently is hardened against injections by strict parameterized queries and a asolid
+framework. The attack should not succeed, however Security Onion should still be able to
+detect it. Here, will will go back to the Kali VM and access the website through there.
+<img width="1920" height="1200" alt="image" src="https://github.com/user-attachments/assets/97f060cc-c5d5-4af7-bf4f-051cec425680" />
+Figure 6.6: Fixed website with SQL injection<br><br>
+Here the “attacker” will attempt to display multiple tables on the SQL database (which will
+not work). We can submit the executable through clicking the button.<br>
+If we return to the console of Security Onion, we can see that the malicious activity in the
+alerts section of the dashboard:
+<img width="1715" height="1072" alt="image" src="https://github.com/user-attachments/assets/6348cb10-f982-45a9-a10f-6671dc664f9d" />
+
+Figure 6.7: Security Onion Alert showing in-depth details of the severity of the attack<br><br>
+
+Here is displays a plethora of information, including the source and destination ports and
+ips, which service was triggered, and the treat level of what occurred. Here in this example
+it allowed the activity to pass, however it was marked as a medium level threat and
+logged.<br>
+This is the end of Phase 2.
+
+<h2>Phase 3</h2><br>
+The final phase will include the usage of AWS to simulate the uploading and downloading
+of the MySQL database server. This will consist of replicating the database server, the set
+up of EC2 environment in AWS, and the testing and process of the recovery process in
+AWS.<br>
+The set-up of this includes the assignment of various roles, permissions, creation of
+security groups, creation of VPC, and the implementation of EC2 and replication of the
+server. For the sake of this paper, some unnecessary and incorrect processes will be
+omitted as this section will cover a lot of material.<br>
